@@ -1,0 +1,442 @@
+{
+	"info": {
+		"_postman_id": "d261fc93-38a3-4a0d-a704-57156f0f2172",
+		"name": "Postman_Api_Project-02",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24509866"
+	},
+	"item": [
+		{
+			"name": "Get_All_Collection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"let statusCode = pm.response.code;\r",
+							"\r",
+							"console.log(statusCode, jsonData.collections.length);\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 200:{\r",
+							"        pm.test(\"Verify Collections Size\", function(){\r",
+							"            console.log(\"Passed\")\r",
+							"        })\r",
+							"        break;\r",
+							"    }\r",
+							"    default:{\r",
+							"        pm.test(`wrong statusCode ${statusCode}`, function(){\r",
+							"            console.log(\"something Went Wrong!!\")\r",
+							"        })\r",
+							"    }\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "PMAK-64228d67d6ad076308683beb-00d41ab310bfda0537a2561fcc0a7a7e59",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/collections",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"collections"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post_single_Collection",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let name = pm.variables.replaceIn(\"{{$randomFullName}}\");\r",
+							"let owner = pm.variables.replaceIn(\"{{$randomInt}}\");\r",
+							"let createdAt = pm.variables.replaceIn(\"{{$randomDateRecent}}\")\r",
+							"let updatedAt = pm.variables.replaceIn(\"{{$randomDateFuture}}\")\r",
+							"let uid = pm.variables.replaceIn(\"{{$randomUUID}}\")\r",
+							"let isPublic = pm.variables.replaceIn(\"{{$randomBoolean}}\")\r",
+							"\r",
+							"pm.environment.set('name', name);\r",
+							"pm.environment.set(\"owner\", owner)\r",
+							"pm.environment.set('createdAt', createdAt)\r",
+							"pm.environment.set('updatedAt', updatedAt)\r",
+							"pm.environment.set('uid', uid);\r",
+							"pm.environment.set('isPublic', isPublic);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"console.log(jsonData)\r",
+							"\r",
+							"pm.environment.set(\"collection_uid\", jsonData.collection.uid)\r",
+							"\r",
+							"let statusCode = pm.response.code;\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 200:{\r",
+							"        pm.test(\"Verify Name\", function(){\r",
+							"            pm.expect(jsonData.collection.name).to.eql(pm.environment.get('name'));\r",
+							"        })\r",
+							"        pm.test(\"Verify Uid\", function(){\r",
+							"            pm.expect(jsonData.collection.uid).to.eql(pm.environment.get('collection_uid'));\r",
+							"        })\r",
+							"        break;\r",
+							"    }\r",
+							"    default:{\r",
+							"        pm.test(`Verify The StatusCode of ${statusCode}`, function(){\r",
+							"            console.log(\"StatusCode\", statusCode);\r",
+							"        })\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"// console.log(pm.environment.get('collection_uid'))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-api-key",
+						"value": "PMAK-64228d67d6ad076308683beb-00d41ab310bfda0537a2561fcc0a7a7e59",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"collection\": {\r\n        \"info\": {\r\n            \"name\": \"{{name}}\",\r\n            \"description\": \"This is just a sample collection.\",\r\n            \"schema\": \"https://schema.getpostman.com/json/collection/v2.1.0/collection.json\"\r\n        },\r\n        \"item\": [\r\n            {\r\n                \"name\": \"This is a folder\",\r\n                \"item\": [\r\n                    {\r\n                        \"name\": \"Sample POST Request\",\r\n                        \"request\": {\r\n                            \"url\": \"https://postman-echo.com/post\",\r\n                            \"method\": \"POST\",\r\n                            \"header\": [\r\n                                {\r\n                                    \"key\": \"Content-Type\",\r\n                                    \"value\": \"application/json\"\r\n                                }\r\n                            ],\r\n                            \"body\": {\r\n                                \"mode\": \"raw\",\r\n                                \"raw\": \"{\\\"data\\\": \\\"123\\\"}\"\r\n                            },\r\n                            \"description\": \"This is a sample POST Request\"\r\n                        }\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"name\": \"Sample GET Request\",\r\n                \"request\": {\r\n                    \"url\": \"https://postman-echo/get\",\r\n                    \"method\": \"GET\",\r\n                    \"description\": \"This is a sample GET Request\"\r\n                }\r\n            }\r\n        ]\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/collections",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"collections"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Single_Collectioon",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let statusCode = pm.response.code;\r",
+							"// let statusCode = pm.responseCode.code; // u can use  this also.\r",
+							"switch(statusCode){\r",
+							"    case 200:\r",
+							"        var jsonData = pm.response.json();\r",
+							"        pm.test(\"Name Validation\", function(){\r",
+							"            pm.expect(jsonData.collection.info.name).to.eql(pm.environment.get(\"name\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"UpdateAt Validation\", function(){\r",
+							"            pm.expect(jsonData.collection.info.updateAt).to.eql(pm.environment.get(\"updateAt\"))\r",
+							"        })\r",
+							"        break;\r",
+							"    case 404:\r",
+							"        // console.log(jsonData)\r",
+							"        pm.test(`Varifay the statusCode of ${statusCode}`, function(){\r",
+							"            console.log(\"statusCode\", statusCode);\r",
+							"        });\r",
+							"        break;\r",
+							"    default:\r",
+							"        pm.test(`Varifay the statusCode of ${statusCode}`, function(){\r",
+							"            console.log(\"statusCode\", statusCode);\r",
+							"        });\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "PMAK-64228d67d6ad076308683beb-00d41ab310bfda0537a2561fcc0a7a7e59",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/collections/{{collection_uid}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"collections",
+						"{{collection_uid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put_Single_Collection",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let name = pm.variables.replaceIn(\"{{$randomFullName}}\");\r",
+							"let owner = pm.variables.replaceIn(\"{{$randomInt}}\");\r",
+							"let createdAt = pm.variables.replaceIn(\"{{$randomDateRecent}}\")\r",
+							"let updatedAt = pm.variables.replaceIn(\"{{$randomDateFuture}}\")\r",
+							"let uid = pm.variables.replaceIn(\"{{$randomUUID}}\")\r",
+							"let isPublic = pm.variables.replaceIn(\"{{$randomBoolean}}\")\r",
+							"let description = pm.variables.replaceIn(\"{{$randomLoremSentence}}\")\r",
+							"\r",
+							"pm.environment.set('name', name);\r",
+							"pm.environment.set(\"owner\", owner)\r",
+							"pm.environment.set('createdAt', createdAt)\r",
+							"pm.environment.set('updatedAt', updatedAt)\r",
+							"pm.environment.set('uid', uid);\r",
+							"pm.environment.set('isPublic', isPublic);\r",
+							"pm.environment.set('description', description);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"console.log(jsonData)\r",
+							"\r",
+							"pm.environment.set(\"collection_uid\", jsonData.collection.uid)\r",
+							"\r",
+							"let statusCode = pm.response.code;\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 200:{\r",
+							"        pm.test(\"Verify Name\", function(){\r",
+							"            pm.expect(jsonData.collection.name).to.eql(pm.environment.get('name'));\r",
+							"        })\r",
+							"        pm.test(\"Verify Uid\", function(){\r",
+							"            pm.expect(jsonData.collection.uid).to.eql(pm.environment.get('collection_uid'));\r",
+							"        })\r",
+							"        break;\r",
+							"    }\r",
+							"    default:{\r",
+							"        pm.test(`Verify The StatusCode of ${statusCode}`, function(){\r",
+							"            console.log(\"StatusCode\", statusCode);\r",
+							"        })\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"// console.log(pm.environment.get('collection_uid'))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-api-key",
+						"value": "PMAK-64228d67d6ad076308683beb-00d41ab310bfda0537a2561fcc0a7a7e59",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"collection\": {\r\n        \"info\": {\r\n            \"name\": \"{{name}}\",\r\n            \"owner\": \"{{owner}}\",\r\n            \"createdAt\": \"{{createdAt}}\",\r\n            \"updatedAt\": \"{{updatedAt}}\",\r\n            \"uid\": \"{{uid}}\",\r\n            \"isPublic\": {{isPublic}},\r\n            \"description\": \"{{description}}\",\r\n            \"_postman_id\": \"174bad7c-07e3-45f3-914f-36cf84e5586f\",\r\n            \"schema\": \"https://schema.getpostman.com/json/collection/v2.1.0/collection.json\"\r\n        },\r\n        \"item\": [\r\n            {\r\n                \"name\": \"This is a folder\",\r\n                \"item\": [\r\n                    {\r\n                        \"name\": \"Sample POST Request\",\r\n                        \"request\": {\r\n                            \"url\": \"https://postman-echo.com/post\",\r\n                            \"method\": \"POST\",\r\n                            \"header\": [\r\n                                {\r\n                                    \"key\": \"Content-Type\",\r\n                                    \"value\": \"application/json\"\r\n                                }\r\n                            ],\r\n                            \"body\": {\r\n                                \"mode\": \"raw\",\r\n                                \"raw\": \"{\\\"data\\\": \\\"123\\\"}\"\r\n                            },\r\n                            \"description\": \"This is a sample POST Request\"\r\n                        }\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"name\": \"Sample GET Request\",\r\n                \"request\": {\r\n                    \"url\": \"https://postman-echo/get\",\r\n                    \"method\": \"GET\",\r\n                    \"description\": \"This is a sample GET Request\"\r\n                }\r\n            }\r\n        ]\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/collections/{{collection_uid}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"collections",
+						"{{collection_uid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Single_Collectioon_After_Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let statusCode = pm.response.code;\r",
+							"// let statusCode = pm.responseCode.code; // u can use  this also.\r",
+							"switch(statusCode){\r",
+							"    case 200:\r",
+							"        var jsonData = pm.response.json();\r",
+							"        pm.test(\"Name Validation\", function(){\r",
+							"            pm.expect(jsonData.collection.info.name).to.eql(pm.environment.get(\"name\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"UpdateAt Validation\", function(){\r",
+							"            pm.expect(jsonData.collection.info.updateAt).to.eql(pm.environment.get(\"updateAt\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('Description Validation', function(){\r",
+							"            pm.expect(jsonData.collection.info.description).to.eql(pm.environment.get('description'))\r",
+							"        })\r",
+							"        break;\r",
+							"    case 404:\r",
+							"        // console.log(jsonData)\r",
+							"        pm.test(`Varifay the statusCode of ${statusCode}`, function(){\r",
+							"            console.log(\"statusCode\", statusCode);\r",
+							"        });\r",
+							"        break;\r",
+							"    default:\r",
+							"        pm.test(`Varifay the statusCode of ${statusCode}`, function(){\r",
+							"            console.log(\"statusCode\", statusCode);\r",
+							"        });\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "PMAK-64228d67d6ad076308683beb-00d41ab310bfda0537a2561fcc0a7a7e59",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/collections/{{collection_uid}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"collections",
+						"{{collection_uid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete_Single_Collection",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "PMAK-64228d67d6ad076308683beb-00d41ab310bfda0537a2561fcc0a7a7e59",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/collections/{{collection_uid}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"collections",
+						"{{collection_uid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Single_Collectioon_After_Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let statusCode = pm.response.code;\r",
+							"// let statusCode = pm.responseCode.code; // u can use  this also.\\\r",
+							"let jsonData = pm.response.json();\r",
+							"console.log(jsonData)\r",
+							"switch(statusCode){\r",
+							"    case 404:\r",
+							"        // console.log(jsonData)\r",
+							"        pm.test(`Varifay the statusCode of ${statusCode}`, function(){\r",
+							"            console.log(\"status:\", jsonData.error.message);\r",
+							"        });\r",
+							"        break;\r",
+							"    default:\r",
+							"        pm.test(`Varifay the statusCode of ${statusCode}`, function(){\r",
+							"            console.log(\"statusCode\", jsonData.error.message);\r",
+							"        });\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "PMAK-64228d67d6ad076308683beb-00d41ab310bfda0537a2561fcc0a7a7e59",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/collections/{{collection_uid}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"collections",
+						"{{collection_uid}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
