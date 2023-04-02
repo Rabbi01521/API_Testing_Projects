@@ -1,0 +1,422 @@
+{
+	"info": {
+		"_postman_id": "96901abd-cf6d-45c2-adcb-f28805a982a5",
+		"name": "Student_Api_Project_03",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24509866"
+	},
+	"item": [
+		{
+			"name": "Get_Students",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let StatusCode = pm.response.code;\r",
+							"let jsonData = pm.response.json();\r",
+							"// console.log(StatusCode)\r",
+							"\r",
+							"pm.test('StatusCode Validation', function(){\r",
+							"    console.log(\"StatusCode: \",StatusCode)\r",
+							"})\r",
+							"\r",
+							"pm.test('Length Validation', function(){\r",
+							"    if(jsonData.length < 0){\r",
+							"        console.log(\"Fail\")\r",
+							"    }\r",
+							"    else{\r",
+							"        console.log(\"Pass\")\r",
+							"    }\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/studentsDetails",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"studentsDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create_Single_Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let statusCode = pm.response.code;\r",
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.environment.set('StudentId', jsonData.id);\r",
+							"\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 201:{\r",
+							"        pm.test(\"StatusCode Validation\", function(){\r",
+							"            console.log(\"StatusCode\", statusCode);\r",
+							"        })\r",
+							"        break;\r",
+							"    }\r",
+							"    default:{\r",
+							"        console.log(`${statusCode} Showing`)\r",
+							"    }\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let firstName = pm.variables.replaceIn('{{$randomFirstName}}')\r",
+							"let lastName = pm.variables.replaceIn('{{$randomLastName}}')\r",
+							"let middleName = pm.variables.replaceIn('{{$randomWord}}')\r",
+							"let dateBirth = pm.variables.replaceIn('{{$randomDatePast}}')\r",
+							"\r",
+							"pm.environment.set('firstName', firstName);\r",
+							"pm.environment.set('lastName', lastName);\r",
+							"pm.environment.set('middleName', middleName);\r",
+							"pm.environment.set('dateBirth', dateBirth);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"{{firstName}}\",\r\n    \"middle_name\": \"{{middleName}}\",\r\n    \"last_name\": \"{{lastName}}\",\r\n    \"date_of_birth\": \"{{dateBirth}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/studentsDetails",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"studentsDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Single_Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"let StatusCode = pm.response.code;\r",
+							"// console.log(StatusCode)\r",
+							"\r",
+							"pm.test('StatusCode Validation', function(){\r",
+							"    console.log(\"StatusCode: \",StatusCode)\r",
+							"})\r",
+							"\r",
+							"switch(StatusCode){\r",
+							"    case 200:{\r",
+							"        pm.test('ID Validatioin', function(){\r",
+							"            pm.expect(jsonData.data.id).to.eql(pm.environment.get(\"StudentId\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('FirstName Validatioin', function(){\r",
+							"            pm.expect(jsonData.data.first_name).to.eql(pm.environment.get(\"firstName\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"MiddleName Validatioin\", function(){\r",
+							"            pm.expect(jsonData.data.middle_name).to.eql(pm.environment.get('middleName'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('LastName Validatioin', function(){\r",
+							"            pm.expect(jsonData.data.last_name).to.eql(pm.environment.get(\"lastName\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('Date_of_birth Validatioin', function(){\r",
+							"            pm.expect(jsonData.data.date_of_birth).to.eql(pm.environment.get(\"dateBirth\"))\r",
+							"        })\r",
+							"\r",
+							"        break;\r",
+							"    }\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/studentsDetails/{{StudentId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"studentsDetails",
+						"{{StudentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create_Technical_skills",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let statusCode = pm.response.code;\r",
+							"// let jsonData = pm.response.json();\r",
+							"\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 200:{\r",
+							"        pm.test(\"StatusCode Validation\", function(){\r",
+							"            console.log(\"StatusCode\", statusCode);\r",
+							"        })\r",
+							"        break;\r",
+							"    }\r",
+							"    default:{\r",
+							"        console.log(`${statusCode} Showing`)\r",
+							"    }\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let yearEx = pm.variables.replaceIn(\"{{$randomInt}}\")\r",
+							"let language1 = pm.variables.replaceIn('{{$randomWord}}')\r",
+							"let language2 = pm.variables.replaceIn('{{$randomWord}}')\r",
+							"\r",
+							"pm.environment.set('yearEx', yearEx);\r",
+							"pm.environment.set('language1', language1);\r",
+							"pm.environment.set('language2', language2);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"language\": [\r\n        \"{{language1}}\",\r\n        \"{{language2}}\"\r\n    ],\r\n    \"yearexp\": \"{{yearEx}}\",\r\n    \"lastused\": \"sample string 3\",\r\n    \"st_id\": {{StudentId}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/technicalskills",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"technicalskills"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create_Student_Address",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let statusCode = pm.response.code;\r",
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.environment.set('status', jsonData.status)\r",
+							"pm.environment.set('msg', jsonData.msg)\r",
+							"\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 200:{\r",
+							"        pm.test(\"StatusCode Validation\", function(){\r",
+							"            console.log(\"StatusCode\", statusCode);\r",
+							"        })\r",
+							"        \r",
+							"        pm.test(\"Status Validation\", function(){\r",
+							"            pm.expect(jsonData.status).to.eql(pm.environment.get('status'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Massage Validation\", function(){\r",
+							"            pm.expect(jsonData.msg).to.eql(pm.environment.get('msg'))\r",
+							"        })\r",
+							"        break;\r",
+							"    }\r",
+							"    default:{\r",
+							"        console.log(`${statusCode} Showing`)\r",
+							"    }\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let houseNumber = pm.variables.replaceIn('{{$randomInt}}')\r",
+							"let city = pm.variables.replaceIn('{{$randomCity}}')\r",
+							"let country = pm.variables.replaceIn('{{$randomCountry}}')\r",
+							"let mobile1 = pm.variables.replaceIn('{{$randomPhoneNumberExt}}')\r",
+							"let mobile2 = pm.variables.replaceIn('{{$randomPhoneNumberExt}}')\r",
+							"// let currentAddress = pm.variables.replaceIn('{{$randomStreetAddress}}')\r",
+							"\r",
+							"pm.environment.set('houseNumber', houseNumber);\r",
+							"pm.environment.set('city', city);\r",
+							"pm.environment.set('country', country);\r",
+							"pm.environment.set('mobile1', mobile1);\r",
+							"pm.environment.set('mobile2', mobile2);\r",
+							"// pm.environment.set('currentAddress', currentAddress);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Permanent_Address\": {\r\n        \"House_Number\": \"{{houseNumber}}\",\r\n        \"City\": \"{{city}}\",\r\n        \"State\": \"sample string 3\",\r\n        \"Country\": \"{{country}}\",\r\n        \"PhoneNumber\": [\r\n            {\r\n                \"Std_Code\": \"sample string 1\",\r\n                \"Home\": \"sample string 2\",\r\n                \"Mobile\": \"{{mobile1}}\"\r\n            },\r\n            {\r\n                \"Std_Code\": \"sample string 1\",\r\n                \"Home\": \"sample string 2\",\r\n                \"Mobile\": \"{{mobile2}}\"\r\n            }\r\n        ]\r\n    },\r\n    \"stId\": {{StudentId}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/addresses",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"addresses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Final_Student_details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let StatusCode = pm.response.code;\r",
+							"let jsonData = pm.response.json();\r",
+							"// console.log((jsonData.data.Address[0].Current_Address))\r",
+							"\r",
+							"switch(StatusCode){\r",
+							"    case 200:{\r",
+							"        pm.test('StatusCode Validation', function(){\r",
+							"            console.log(\"StatusCode: \",StatusCode)\r",
+							"        })\r",
+							"\r",
+							"        pm.test('Language1 Validation', function(){\r",
+							"            pm.expect(jsonData.data.TechnicalDetails[0].language[0]).to.eql(pm.environment.get('language1'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('Language2 Validation', function(){\r",
+							"            pm.expect(jsonData.data.TechnicalDetails[0].language[1]).to.eql(pm.environment.get('language2'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('Year_of_Experiance Validation', function(){\r",
+							"            pm.expect(jsonData.data.TechnicalDetails[0].yearexp).to.eql(pm.environment.get('yearEx'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('HouseNumber Validation', function(){\r",
+							"            pm.expect(jsonData.data.Address[0].Permanent_Address.House_Number).to.eql(pm.environment.get('houseNumber'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('City Validation', function(){\r",
+							"            pm.expect(jsonData.data.Address[0].Permanent_Address.City).to.eql(pm.environment.get('city'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('Country Validation', function(){\r",
+							"            pm.expect(jsonData.data.Address[0].Permanent_Address.Country).to.eql(pm.environment.get('country'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('PhoneNumber1 Validation', function(){\r",
+							"            pm.expect(jsonData.data.Address[0].Permanent_Address.PhoneNumber[0].Mobile).to.eql(pm.environment.get('mobile1'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test('PhoneNumber2 Validation', function(){\r",
+							"            pm.expect(jsonData.data.Address[0].Permanent_Address.PhoneNumber[1].Mobile).to.eql(pm.environment.get('mobile2'))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"CurrentAddress Validation\", function () {\r",
+							"            pm.expect(jsonData.data.Address[0].Current_Address).to.be.null;\r",
+							"        });\r",
+							"\r",
+							"        break;\r",
+							"    }\r",
+							"    default:{\r",
+							"        console.log(`${statusCode} Showing`)\r",
+							"    }\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/FinalStudentDetails/{{StudentId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"FinalStudentDetails",
+						"{{StudentId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
