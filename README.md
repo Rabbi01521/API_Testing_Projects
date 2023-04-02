@@ -36,7 +36,7 @@ https://restful-booker.herokuapp.com/
 Here in this API books can be booked with a centain check in and check out. Bookings can be viewed, updated, and deleted as well.
 
 <p align="center">
-  <img src="https://tinyurl.com/2nzhx94r" />
+  <img src="https://www.awesomescreenshot.com/image/38576895?key=2f91d1175ab080b268292455fecbf8ee" />
 </p>
 
 # Requirements
